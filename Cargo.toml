@@ -1,0 +1,8 @@
+[workspace]
+members = ["dev_project", "pdf_ok"]
+default-members = ["dev_project", "pdf_ok"]
+resolver = "2"
+
+[workspace.package]
+authors = ["Richard Locke"]
+homepage = "https:://orangekiwi.io"
