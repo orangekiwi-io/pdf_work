@@ -74,8 +74,9 @@ pub fn read_file_data(files: Vec<&str>) {
         let html: String =
             markdown::to_html(&markdown_content.to_owned());
 
-        let filename = filename.trim_end_matches(".md");
-        let _ = generate_pdf(html, filename);
+        // Remove the markdown, md, file extension
+        let filename_path = filename.trim_end_matches(".md");
+        let _ = generate_pdf(html, filename_path);
 
         file += 1;
         // Reset yaml and markdown content ready for the next file
