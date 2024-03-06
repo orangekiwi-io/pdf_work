@@ -10,5 +10,9 @@ authors.workspace = true
 [dependencies]
 colored = "2.1.0"
 dotenvy = "0.15.7"
+headless_chrome = "1.0.9"
+markdown = "0.3.0"
+project-root = "0.2.2"
 serde = { version = "1.0.197", features = ["derive"] }
 serde_yaml = "0.9.32"
+url-escape = "0.1.1"
