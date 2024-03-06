@@ -9,3 +9,7 @@ pub use generate_pdf::generate_pdf;
 /// The `read_file_data` module contains functions for reading files.
 mod read_file_data;
 pub use read_file_data::read_file_data;
+
+/// The `extract_to_end_string` module contains a function to extract everything to the end of the string after selected delimiter.
+mod extract_to_end_string;
+pub use extract_to_end_string::extract_to_end_string;

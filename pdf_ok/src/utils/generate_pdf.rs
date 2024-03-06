@@ -1,9 +1,9 @@
 use headless_chrome::Browser;
-use std::io::Write;
 use std::fs;
+use std::io::Write;
+use std::path::Path;
 
-use project_root::get_project_root;
-
+use crate::utils::extract_to_end_string;
 /// Generates a PDF from HTML content using headless Chrome.
 ///
 /// # Arguments
@@ -28,21 +28,24 @@ use project_root::get_project_root;
 /// ```
 pub fn generate_pdf(
     generated_html: String,
-    filename: &str,
+    filename_path: &str,
 ) -> Result<(), Box<dyn std::error::Error>> {
     let browser = Browser::default()?; // Start a new headless Chrome browser instance
     let tab = browser.new_tab()?; // Open a new tab
-    let root_path = match get_project_root() { // Get the root path of the project
-        Ok(p) => format!("{:?}", p),
-        Err(e) => format!("{:?}", e),
-    };
-    let pdf_path = format!("{}.pdf", filename); // Create the PDF file path
+
     let mut html = String::new();
     // Encode the HTML content to URL-safe format
     // url_escape:: comes from the url_escape crate
     url_escape::encode_query_to_string(generated_html, &mut html);
 
-    println!("root_path: {}", root_path);
+    // TODO RL Allow path to be set by the user, keeping "pdfs" as a fallback/default location
+    let output_directory = "pdfs";
+    fs::create_dir_all(output_directory)?;
+    let extracted_filename = extract_to_end_string(filename_path, '/');
+    let mut pdf_file = extracted_filename.unwrap().to_string();
+    pdf_file.push_str(".pdf");
+
+    let pdf_file_path = Path::new(output_directory).join(pdf_file);
 
     // Navigate the tab to the HTML content.
     // In this case, the page is a data stream
@@ -56,8 +59,8 @@ pub fn generate_pdf(
     let mut file = fs::OpenOptions::new()
         .create(true)
         .write(true)
-        .open(pdf_path)?;
+        .open(pdf_file_path)?;
     let _ = file.write_all(&pdf);
-    
+
     Ok(())
 }
