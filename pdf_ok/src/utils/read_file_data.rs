@@ -7,18 +7,20 @@ use std::path::Path;
 
 use crate::utils::generate_pdf;
 
-// The output is wrapped in a Result to allow matching on errors.
-// Returns an Iterator to the Reader of the lines of the file.
-fn read_lines<P>(
-    filename: P,
-) -> io::Result<io::Lines<io::BufReader<File>>>
-where
-    P: AsRef<Path>,
-{
-    let file = File::open(filename)?;
-    Ok(io::BufReader::new(file).lines())
-}
-
+/// Reads data from Markdown files, extracts YAML front matter, and generates PDF files.
+///
+/// # Arguments
+///
+/// * `files` - A vector of file paths to Markdown files containing Front Mattter YAML.
+///
+/// # Examples
+///
+/// ```
+/// use your_crate_name::read_file_data;
+///
+/// let files = vec!["./source_files/404.md"];
+/// read_file_data(files);
+/// ```
 pub fn read_file_data(files: Vec<&str>) {
     let mut file = 0;
     let mut yaml_delimiter_count = 0;
@@ -67,6 +69,7 @@ pub fn read_file_data(files: Vec<&str>) {
             author_value.trim().bright_white()
         );
 
+        // Convert Markdown content to HTML
         // markdown:: comes from the markdown crate
         let html: String =
             markdown::to_html(&markdown_content.to_owned());
@@ -79,4 +82,16 @@ pub fn read_file_data(files: Vec<&str>) {
         yaml_content = String::default();
         markdown_content = String::default();
     }
+}
+
+// The output is wrapped in a Result to allow matching on errors.
+// Returns an Iterator to the Reader of the lines of the file.
+fn read_lines<P>(
+    filename: P,
+) -> io::Result<io::Lines<io::BufReader<File>>>
+where
+    P: AsRef<Path>,
+{
+    let file = File::open(filename)?;
+    Ok(io::BufReader::new(file).lines())
 }
