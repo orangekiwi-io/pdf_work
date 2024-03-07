@@ -46,7 +46,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     println!("\nWelcome to {}", name.yellow());
     println!("PDF creation from Front Matter (YAML) files.");
 
-    // Retrieve Front Matter YAML source files and read their data
+    // Retrieve Front Matter YAML (fmy) source files and read their data
     let fmy_source_files = get_source_front_matter_files();
     read_file_data(fmy_source_files);
 
