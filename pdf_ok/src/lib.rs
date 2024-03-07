@@ -50,5 +50,10 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     let fmy_source_files = get_source_front_matter_files();
     read_file_data(fmy_source_files);
 
+// TESTING
+    // let something = "bob";
+    // let search_string = format!(r#"{{{{{}}}}}"#, something);
+    // println!("{}", search_string);
+
     Ok(())
 }

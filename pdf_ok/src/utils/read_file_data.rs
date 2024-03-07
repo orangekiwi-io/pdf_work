@@ -1,5 +1,6 @@
 use colored::*;
-use serde_yaml::{to_string as yaml_to_string, Value};
+use regex::Regex;
+use serde_yaml::Value;
 use std::collections::BTreeMap;
 use std::fs::File;
 use std::io::{self, BufRead};
@@ -54,25 +55,32 @@ pub fn read_file_data(files: Vec<&str>) {
         yaml_delimiter_count = 0;
 
         let yaml: Value = serde_yaml::from_str(&yaml_content).unwrap();
+        // Convert Front Matter YAML to a BTreeMap
         let yaml_btreemap: BTreeMap<String, Value> =
             yaml_mapping_to_btreemap(&yaml).unwrap();
-        println!(
-            "{} {:#?}\n",
-            "yaml_btreemap value:".cyan(),
-            yaml_btreemap
-        );
-        println!(
-            "{} {:?}",
-            "subtitle:".cyan(),
-            yaml_to_string(yaml_btreemap.get("subtitle").unwrap())
-                .unwrap()
-                .trim()
-        );
+        // println!(
+        //     "{} {:#?}\n",
+        //     "yaml_btreemap value:".cyan(),
+        //     yaml_btreemap
+        // );
+        // println!(
+        //     "{} {}",
+        //     "subtitle:".cyan(),
+        //     yaml_to_string(yaml_btreemap.get("subtitle").unwrap())
+        //         .unwrap()
+        //         .trim()
+        //         .bright_yellow()
+        // );
+
+        // Insert Font Matter YAML into markdown (if applicable)
+        // TODO RL Add some sort of boolean check
+        let merged_markdown_yaml =
+            merge_markdown_yaml(yaml_btreemap, &markdown_content);
 
         // Convert Markdown content to HTML
         // markdown:: comes from the markdown crate
         let html: String =
-            markdown::to_html(&markdown_content.to_owned());
+            markdown::to_html(&merged_markdown_yaml.to_owned());
 
         // Remove the markdown, md, file extension
         let filename_path = filename.trim_end_matches(".md");
@@ -143,10 +151,52 @@ fn yaml_mapping_to_btreemap(
                 }
             }
 
-            println!("{} {:#?}", "yaml_btreemap".cyan(), yaml_btreemap);
+            // println!("{} {:#?}", "yaml_btreemap".cyan(), yaml_btreemap);
             // Return the resulting BTreeMap
             Some(yaml_btreemap)
         }
         _ => None, // Return None if yaml is not a mapping
     }
+}
+
+fn merge_markdown_yaml(
+    yaml_btreemap: BTreeMap<String, Value>,
+    markdown_content: &str,
+) -> String {
+    // TODO RL Look into if this could be taken out into a utility function
+    let mut new_btreemap: BTreeMap<String, String> = BTreeMap::new();
+    for (key, value) in yaml_btreemap {
+        if let Value::String(string_value) = value {
+            new_btreemap.insert(key, string_value);
+        }
+    }
+
+    let hay = markdown_content;
+    let regex = Regex::new(r"\{\{([^}]*)\}\}").unwrap();
+
+    let replaced_string =
+        regex.replace_all(hay, |captures: &regex::Captures<'_>| {
+            let replacement_key =
+                captures.get(1).map(|m| m.as_str()).unwrap_or("");
+            if let Some(replacement_value) =
+                new_btreemap.get(replacement_key)
+            {
+                replacement_value.clone() // Clone the string to ensure ownership
+            } else {
+                // If no match found, return the original placeholder
+                captures
+                    .get(0)
+                    .map(|m| String::from(m.as_str()))
+                    .unwrap_or_default()
+            }
+        });
+
+    println!(
+        "\n{}{}",
+        "Markdown with replaced YAML values. Ready for PDF processing"
+            .bright_green(),
+        replaced_string
+    );
+
+    replaced_string.to_string()
 }
