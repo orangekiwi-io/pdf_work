@@ -1,7 +1,6 @@
 use colored::*;
-use serde::Deserialize;
 use serde_yaml::{to_string as yaml_to_string, Value};
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 use std::fs::File;
 use std::io::{self, BufRead};
 use std::path::Path;
@@ -53,34 +52,21 @@ pub fn read_file_data(files: Vec<&str>) {
             }
         }
         yaml_delimiter_count = 0;
-        // Deserialize from a YAML string
-        let de = serde_yaml::Deserializer::from_str(&yaml_content);
-        // Extract the data value from the deserialized result
-        let value = Value::deserialize(de);
-        // Convert the serde_yaml Value type to something we can use (in this case a string)
-        // We are looking for the author YAML data
-        // TODO RL Error handing for when the 'get' key/index does not exist
-        // let yaml_as_value_string = yaml_to_string(&value.unwrap());
-        let yaml_as_value = value.unwrap();
-        // println!(
-        //     "{} {:#?}\n",
-        //     "YAML value:".cyan(),
-        //     yaml_as_value
-        // );
 
         let yaml: Value = serde_yaml::from_str(&yaml_content).unwrap();
-        let bob = yaml_mapping_to_hashmap(&yaml);
-        let bob_hash = bob.unwrap();
-        println!("{} {:#?}\n", "Bob YAML value:".cyan(), bob_hash);
-        println!("tags: {:?}", bob_hash.get("tags").unwrap());
-
-        let author_value =
-            yaml_to_string(yaml_as_value.get("author").unwrap())
-                .expect("msg");
+        let yaml_btreemap: BTreeMap<String, Value> =
+            yaml_mapping_to_btreemap(&yaml).unwrap();
         println!(
-            "{} {}\n",
-            "Deserializer author YAML value:".cyan(),
-            author_value.trim().bright_white()
+            "{} {:#?}\n",
+            "yaml_btreemap value:".cyan(),
+            yaml_btreemap
+        );
+        println!(
+            "{} {:?}",
+            "subtitle:".cyan(),
+            yaml_to_string(yaml_btreemap.get("subtitle").unwrap())
+                .unwrap()
+                .trim()
         );
 
         // Convert Markdown content to HTML
@@ -111,7 +97,7 @@ where
     Ok(io::BufReader::new(file).lines())
 }
 
-/// Converts a YAML mapping into a Rust HashMap with string keys and arbitrary values.
+/// Converts a YAML mapping into a Rust BTreeMap with string keys and arbitrary values. BTreeMaps are automatically alphabetically sorted.
 ///
 /// # Arguments
 ///
@@ -119,43 +105,47 @@ where
 ///
 /// # Returns
 ///
-/// An Option containing the resulting HashMap<String, Value>. If the YAML data is successfully
-/// converted into a HashMap, it returns Some(hashmap); otherwise, it returns None.
+/// An Option containing the resulting BTreeMap<String, Value>. If the YAML data is successfully
+/// converted into a BTreeMap, it returns Some(btreemap); otherwise, it returns None.
 ///
 /// # Examples
 ///
 /// ```
 /// use serde_yaml::Value;
-/// use std::collections::HashMap;
+/// use std::collections::BTreeMap;
 ///
 /// let yaml_data = serde_yaml::from_str("name: John\nage: 30").unwrap();
-/// let hashmap = yaml_mapping_to_hashmap(&yaml_data).unwrap();
-/// assert_eq!(hashmap.get("name"), Some(&Value::String("John".to_string())));
-/// assert_eq!(hashmap.get("age"), Some(&Value::Number(30.into())));
+/// let btreemap = yaml_mapping_to_btreemap(&yaml_data).unwrap();
+/// assert_eq!(btreemap.get("name"), Some(&Value::String("John".to_string())));
+/// assert_eq!(btreemap.get("age"), Some(&Value::Number(30.into())));
 /// ```
-fn yaml_mapping_to_hashmap(
+fn yaml_mapping_to_btreemap(
     yaml: &Value,
-) -> Option<HashMap<String, Value>> {
+) -> Option<BTreeMap<String, Value>> {
     match yaml {
         // Match if yaml Value contains a Mapping 'object'
         Value::Mapping(mapping_value) => {
-            // Create a new HashMap to hold the YAML data
-            let mut yaml_hashmap = HashMap::new();
+            // Create a new BTreeMap to hold the YAML data
+            let mut yaml_btreemap: BTreeMap<String, Value> =
+                BTreeMap::new();
 
             // Iterate over key-value pairs in the mapping
             for (key, value) in mapping_value.iter() {
                 // Destructure the key-value tuple, if the key is of type Value::String.
                 if let (Value::String(key), value) = (key, value) {
-                    // Insert key-value pair into the HashMap. The key and value values are cloned because insert takes ownership of the arguments
-                    yaml_hashmap.insert(key.clone(), value.clone());
+                    // Insert key-value pair into the BTreeMap. The key and value values are cloned because or_insert takes ownership of the arguments
+                    yaml_btreemap
+                        .entry(key.clone())
+                        .or_insert(value.clone());
                 } else {
                     // Handle non-string keys or non-scalar values
                     return None;
                 }
             }
 
-            // Return the resulting HashMap
-            Some(yaml_hashmap)
+            println!("{} {:#?}", "yaml_btreemap".cyan(), yaml_btreemap);
+            // Return the resulting BTreeMap
+            Some(yaml_btreemap)
         }
         _ => None, // Return None if yaml is not a mapping
     }
