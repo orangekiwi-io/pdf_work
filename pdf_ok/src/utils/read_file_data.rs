@@ -75,7 +75,7 @@ pub fn read_file_data(files: Vec<&str>) {
         // Insert Font Matter YAML into markdown (if applicable)
         // TODO RL Add some sort of boolean check
         let merged_markdown_yaml =
-            merge_markdown_yaml(yaml_btreemap, &markdown_content);
+            merge_markdown_yaml(yaml_btreemap.clone(), &markdown_content);
 
         // Convert Markdown content to HTML
         // markdown:: comes from the markdown crate
@@ -84,7 +84,7 @@ pub fn read_file_data(files: Vec<&str>) {
 
         // Remove the markdown, md, file extension
         let filename_path = filename.trim_end_matches(".md");
-        let _ = generate_pdf(html, filename_path);
+        let _ = generate_pdf(html, filename_path, yaml_btreemap);
 
         file += 1;
         // Reset yaml and markdown content ready for the next file
