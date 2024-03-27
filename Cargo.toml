@@ -5,4 +5,4 @@ resolver = "2"
 
 [workspace.package]
 authors = ["Richard Locke"]
-homepage = "https:://orangekiwi.io"
+homepage = "https://orangekiwi.io"
