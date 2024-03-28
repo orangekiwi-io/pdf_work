@@ -30,6 +30,8 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     let paths = vec![
         PathBuf::from("source_mds/untitled.md"),
         PathBuf::from("source_mds/file_02.md"),
+        PathBuf::from("source_mds/file_not_found.md"),
+        PathBuf::from("source_mds/untitled.txt"),
 
     ];
     bob.add_source_files(paths);
@@ -41,12 +43,9 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     bob.set_output_directory("output_pdfs");
 
     // Metadata for the PDFs
-    let title_entry = PDFDocInfoEntry {
-        doc_info_entry: "Title".to_owned(),
-        yaml_entry: "title".to_owned(),
-    };
+    // Title property set via the HTML template <title> tag
     let author_entry = PDFDocInfoEntry {
-        doc_info_entry: "Author".to_owned(),
+        doc_info_entry: "AuthoR".to_owned(),
         yaml_entry: "author".to_owned(),
     };
     let keywords_entry = PDFDocInfoEntry {
@@ -61,7 +60,6 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
         doc_info_entry: "Language".to_owned(),
         yaml_entry: "language".to_owned(),
     };
-    bob.set_doc_info_entry(title_entry);
     bob.set_doc_info_entry(author_entry);
     bob.set_doc_info_entry(keywords_entry);
     bob.set_doc_info_entry(subject_entry);
