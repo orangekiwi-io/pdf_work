@@ -2,7 +2,7 @@
 
 use colored::Colorize;
 use dotenvy::dotenv;
-use pdf_composer::{PDFComposer, PDFDocInfoEntry};
+use pdf_composer::{PDFComposer, PDFDocInfoEntry, PDFVersion};
 use std::{env, path::PathBuf};
 
 /// This is the main entry point for `Rust and Cargo starter (RCS)`
@@ -37,10 +37,10 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     bob.add_source_files(paths);
 
     // PDF version (not the version of the document, but the Adobe (formerly) PDF format version)
-    bob.set_pdf_version("2.0");
+    bob.set_pdf_version(PDFVersion::V2_0);
 
     // Output directory for the generated PDFs
-    bob.set_output_directory("output_pdfs");
+    // bob.set_output_directory("output_pdfs");
 
     // Metadata for the PDFs
     // Title property set via the HTML template <title> tag
