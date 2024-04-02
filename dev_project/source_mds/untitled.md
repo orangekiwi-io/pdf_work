@@ -7,6 +7,7 @@ keywords: "PDF, rust, crates"
 language: "en-GB"
 title: "Untitled"
 description: "A sample page."
+wibble: "Wibble, a value untitled"
 
 ---
 
@@ -17,4 +18,3 @@ The quick brown fox jumps over the lazy dog.
 Example of replace yaml value (title): {{title}}
 
 Example of yaml value not found (bob): {{bob}}
-

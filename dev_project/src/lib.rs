@@ -60,8 +60,13 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
         doc_info_entry: "Language".to_owned(),
         yaml_entry: "language".to_owned(),
     };
+    let dude_entry = PDFDocInfoEntry {
+        doc_info_entry: "Dude".to_owned(),
+        yaml_entry: "wibble".to_owned(),
+    };
     bob.set_doc_info_entry(author_entry);
     bob.set_doc_info_entry(keywords_entry);
+    bob.set_doc_info_entry(dude_entry);
     bob.set_doc_info_entry(subject_entry);
     bob.set_doc_info_entry(language_entry);
 

@@ -7,6 +7,7 @@ keywords: "Simple, keywords"
 language: "en-GB"
 title: "My page"
 description: "Another sample page."
+another_value: "A Value file02"
 
 ---
 
