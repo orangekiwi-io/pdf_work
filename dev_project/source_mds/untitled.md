@@ -15,6 +15,10 @@ wibble: "Wibble, a value untitled"
 
 The quick brown fox jumps over the lazy dog.
 
-Example of replace yaml value (title): {{title}}
+---
+
+Example of replace yaml value (title): {{title}} ---
+
+***
 
 Example of yaml value not found (bob): {{bob}}
