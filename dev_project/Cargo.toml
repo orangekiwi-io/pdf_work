@@ -11,4 +11,4 @@ authors.workspace = true
 [dependencies]
 colored = "2.1.0"
 dotenvy = "0.15.7"
-pdf_composer = { version = "0.2.0", path = "../../pdf_composer" }
+pdf_composer = { version = "0.2.1", path = "../../pdf_composer" }
