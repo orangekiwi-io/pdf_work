@@ -32,7 +32,6 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
         PathBuf::from("source_mds/file_02.md"),
         PathBuf::from("source_mds/file_not_found.md"),
         PathBuf::from("source_mds/untitled.txt"),
-
     ];
     bob.add_source_files(paths);
 
@@ -45,24 +44,24 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     // Metadata for the PDFs
     // Title property set via the HTML template <title> tag
     let author_entry = PDFDocInfoEntry {
-        doc_info_entry: "AuthoR".to_owned(),
-        yaml_entry: "author".to_owned(),
+        doc_info_entry: "AuthoR",
+        yaml_entry: "author",
     };
     let keywords_entry = PDFDocInfoEntry {
-        doc_info_entry: "Keywords".to_owned(),
-        yaml_entry: "keywords".to_owned(),
+        doc_info_entry: "Keywords",
+        yaml_entry: "keywords",
     };
     let subject_entry = PDFDocInfoEntry {
-        doc_info_entry: "Subject".to_owned(),
-        yaml_entry: "description".to_owned(),
+        doc_info_entry: "Subject",
+        yaml_entry: "description",
     };
     let language_entry = PDFDocInfoEntry {
-        doc_info_entry: "Language".to_owned(),
-        yaml_entry: "language".to_owned(),
+        doc_info_entry: "Language",
+        yaml_entry: "language",
     };
     let dude_entry = PDFDocInfoEntry {
-        doc_info_entry: "Dude".to_owned(),
-        yaml_entry: "wibble".to_owned(),
+        doc_info_entry: "Dude",
+        yaml_entry: "wibble",
     };
     bob.set_doc_info_entry(author_entry);
     bob.set_doc_info_entry(keywords_entry);
