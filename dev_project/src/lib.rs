@@ -2,7 +2,7 @@
 
 use colored::Colorize;
 use dotenvy::dotenv;
-use pdf_composer::{PDFComposer, PDFDocInfoEntry, PDFVersion};
+use pdf_composer::{PaperOrientation, PaperSize, PDFComposer, PDFDocInfoEntry, PDFVersion};
 use std::{env, path::PathBuf};
 
 /// This is the main entry point for `Rust and Cargo starter (RCS)`
@@ -39,8 +39,16 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     bob.set_pdf_version(PDFVersion::V2_0);
 
     // Output directory for the generated PDFs
-    // bob.set_output_directory("output_pdfs");
+    bob.set_output_directory("output_pdfs_paper_sizes");
 
+    // Set the paper size
+    bob.set_paper_size(PaperSize::A6);
+
+    // Set the paper orientation
+    bob.set_orientation(PaperOrientation::Landscape);
+
+    // Set the page margins
+    bob.set_margins("10.25 asd.123 321.qwerty 20");
     // Metadata for the PDFs
     // Title property set via the HTML template <title> tag
     let author_entry = PDFDocInfoEntry {
